@@ -54,7 +54,6 @@ def simulate_mm1_queue(lambda_, mu, simulation_time):
     }
 
 
-# Параметры эксперимента
 lambda_ = 5  # Интенсивность входящего потока
 mu = 6  # Интенсивность обслуживания
 simulation_time = 24
