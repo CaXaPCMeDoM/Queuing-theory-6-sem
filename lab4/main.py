@@ -1,6 +1,8 @@
 import numpy as np
 import heapq
 import matplotlib.pyplot as plt
+import pandas as pd
+
 
 class Simulation:
     def __init__(self, lambda1, lambda2, mu):
@@ -108,6 +110,7 @@ Wq1_theory_list = []
 Wq2_theory_list = []
 Wq1_sim_list = []
 Wq2_sim_list = []
+results = []
 
 for lambda1 in lambda1_values:
     # Теоретические расчеты
@@ -120,10 +123,21 @@ for lambda1 in lambda1_values:
 
     # Симуляция
     sim = Simulation(lambda1, lambda2, mu)
-    sim.run(1000000)
+    sim.run(100000)
     stats = sim.get_stats()
     Wq1_sim_list.append(stats['avg_wait1'])
     Wq2_sim_list.append(stats['avg_wait2'])
+    results.append({
+        'λ₁': lambda1,
+        'Wq1 (теория)': Wq1,
+        'Wq1 (симуляция)': stats['avg_wait1'],
+        'Вероятность ожидания 1 (теория)': rho1,
+        'Вероятность ожидания 1 (симуляция)': stats['prob_wait1'],
+        'Wq2 (теория)': Wq2,
+        'Wq2 (симуляция)': stats['avg_wait2'],
+        'Вероятность ожидания 2 (теория)': rho2 / (1 - rho1),
+        'Вероятность ожидания 2 (симуляция)': stats['prob_wait2'],
+    })
 
 print("Результаты симуляции:")
 print(f"Среднее время ожидания (класс 1): {stats['avg_wait1']:.3f} ч")
@@ -141,3 +155,9 @@ plt.legend()
 plt.title('Зависимость времени ожидания от интенсивности λ₁')
 plt.grid(True)
 plt.show()
+
+df = pd.DataFrame(results)
+df = df.round(4)
+
+print("\nТаблица характеристик системы:")
+print(df.to_string(index=False))
